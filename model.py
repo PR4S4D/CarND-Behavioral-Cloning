@@ -3,22 +3,18 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 from keras.models import Sequential
-from keras.layers.core import Activation
-from keras.layers import Dense, Lambda, Conv2D, Dropout, MaxPooling2D,  Convolution2D, Cropping2D, Flatten
-from scipy import sparse
+from keras.layers import Dense, Lambda, Conv2D, Dropout, Cropping2D, Flatten, BatchNormalization
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
-from keras.regularizers import l2
-from keras.optimizers import Adam
 
 samples = []
 images = []
 angles = []
-images_dir = "./data3/IMG/"
+images_dir = "./data5/IMG/"
 correction_factor = 0.2
 batch_size = 32
 
-with open('./data3/driving_log.csv') as csvfile:
+with open('./data5/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for sample in reader:
         samples.append(sample)
@@ -32,12 +28,11 @@ train_samples, validation_samples = train_test_split(samples, test_size=0.2)
 def add_image_data(center_image, center_angle, angles, images):
     images.append(center_image)
     angles.append(center_angle)
-    images.append(np.fliplr(center_image))
-    angles.append(-center_angle)
+    # images.append(np.fliplr(center_image))
+    # angles.append(-center_angle)
 
 
 def load_img(batch_sample):
-    #print(batch_sample)
     img = images_dir+batch_sample.split('/')[-1]
     img = cv2.imread(img)
     img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
@@ -54,7 +49,6 @@ def generator(samples, batch_size=32):
             images = []
             angles = []
             for batch_sample in batch_samples:
-                #name = load_img(batch_sample)
 
                 center_angle = float(batch_sample[3])
 
@@ -81,6 +75,7 @@ model = Sequential()
 row, col, ch = 160, 320, 3
 
 # pre-processing
+# normalization
 model.add(Lambda(lambda x: x/127.5 - 1,
                  input_shape=(row, col, ch),
                  output_shape=(row, col, ch)))
@@ -89,21 +84,21 @@ model.add(Lambda(lambda x: x/127.5 - 1,
 model.add(Cropping2D(cropping=((70, 25), (0, 0)), input_shape=(row, col, ch)))
 
 model.add(Conv2D(24, kernel_size=(5, 5), activation='elu', subsample=(2, 2)))
-
+model.add(BatchNormalization())
 model.add(Conv2D(36, kernel_size=(5, 5), activation='elu', subsample=(2, 2)))
-
+model.add(BatchNormalization())
 model.add(Conv2D(48, kernel_size=(5, 5), activation='elu', subsample=(2, 2)))
-
+model.add(BatchNormalization())
 model.add(Conv2D(64, kernel_size=(3, 3),  activation='elu'))
-
+model.add(BatchNormalization())
 model.add(Conv2D(64, kernel_size=(3, 3),  activation='elu'))
-
+model.add(BatchNormalization())
 model.add(Flatten())
 
 
 model.add(Dense(100, activation='elu'))
 # Dropout layer to avoid overfitting
-model.add(Dropout(0.5))
+model.add(Dropout(0.2))
 model.add(Dense(50, activation='elu'))
 model.add(Dense(10,  activation='elu'))
 model.add(Dense(1,  activation='elu'))
@@ -125,4 +120,4 @@ plt.title('model mean squared error loss')
 plt.ylabel('mean squared error loss')
 plt.xlabel('epoch')
 plt.legend(['training set', 'validation set'], loc='upper right')
-plt.imsave('model_loss.jpg')
+plt.savefig('model_loss.jpg')
