@@ -47,9 +47,12 @@ I am using the model architecture proposed by nvidia in this article -
 
 The following images shows the CNN archtecture proposed by Nvidia.
 
-<img src="nvidia.png" />
-
-<center> Source - Nvidia </center>
+<p>
+    <img src="nvidia.png" alt/>
+</p>
+<p>
+    <em>Source - Nvidia </em>
+</p>
 
 This model (starting from the bottom) contains a normalization layer which uses kera lambda layers, followed by 5 Convolution layers (model.py line 86-96).
 
@@ -142,23 +145,40 @@ Here is a visualization of the architecture
 
 To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
 
-<center><img src="./images/center.jpg"/></center>
-<center>Center</center>
-<center><img src="./images/left.jpg"/></center>
-<center>Left</center>
-<center><img src="./images/right.jpg"/></center>
-<center>Right</center>
+
+<p>
+    <img src="./images/center.jpg" alt/>
+</p>
+<p>
+    <em>Center</em>
+</p>
+<p>
+    <img src="./images/left.jpg" alt/>
+</p>
+<p>
+    <em>Left</em>
+</p>
+<p>
+    <img src="./images/right.jpg" alt/>
+</p>
+<p>
+    <em>Right</em>
+</p>
+
+
 
 I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover from the road sides. These images show what a recovery looks like starting from right to center
 
 
 
-<center><img src="./images/recovery1.jpg"/></center>
-<center><img src="./images/recovery2.jpg"/></center>
-<center><img src="./images/recovery3.jpg"/></center>
-<center><img src="./images/recovery4.jpg"/></center>
-<center><img src="./images/recovery5.jpg"/></center>
-<center>Recovery</center>
+<img src="./images/recovery1.jpg"/>
+<img src="./images/recovery2.jpg"/>
+<img src="./images/recovery3.jpg"/>
+<img src="./images/recovery4.jpg"/>
+<img src="./images/recovery5.jpg"/>
+<p>
+    <em>Recovery</em>
+</p>
 
 Then I repeated this process on track two in order to get more data points.
 
